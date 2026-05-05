@@ -143,12 +143,53 @@ agent:
       unpinned_npx: true
       env_secrets: true
       severity: error
+  # ハーネス本体の permissions / hooks ハードニング
+  # mcp ルールと同じファイルを対象にしうるが、見るブロックが異なる（mcpServers vs permissions/hooks）
+  # Bash(*) / Bash(sudo / Bash(rm / Bash(curl / WebFetch(*) などの広域許可、
+  # hook command 内の curl|wget|sh|bash|sudo、hook 内の `npx pkg@latest` を検出
+  settings:
+    - path: "{.claude/settings.json,.claude/settings.local.json}"
+      unpinned_npx: true
+      severity: error
+  # AI ignore ファイル（.llmignore / .aiexclude / .claudeignore / .cursorignore）が
+  # .env* / *.pem / id_rsa 等の機密パターンを明示的にカバーしているか
+  # 該当ファイルが無いリポでは glob 0 マッチで自動スキップ
+  ignore:
+    - path: "{.llmignore,.aiexclude,.claudeignore,.cursorignore}"
+      severity: warn
 
 # .gitignore 対象ファイル（.env 等）の誤コミット検出
 git:
   diff:
     ignored:
       scope: diff
+      severity: error
+
+# Dockerfile のサプライチェーン / ランタイムハードニング
+# Dockerfile が無いリポジトリでは glob 0 マッチで自動スキップされる
+docker:
+  # ベースイメージのタグピン留め（:latest / タグなしを禁止）
+  # supply chain attack の入口を塞ぐ
+  pinned:
+    - path: "**/Dockerfile"
+      severity: error
+  # USER 指定必須かつ root / 0 を禁止（コンテナ内特権実行を防ぐ）
+  user:
+    - path: "**/Dockerfile"
+      severity: error
+  # HEALTHCHECK 推奨（運用の死活監視。warn 止まりに留める）
+  healthcheck:
+    - path: "**/Dockerfile"
+      severity: warn
+  # 典型的な落とし穴を禁止
+  forbidden:
+    - path: "**/Dockerfile"
+      instructions:
+        - name: "ADD"
+          pattern: "^https?://"
+          message: "ADD <URL> ではなく COPY + curl/wget で来歴を明示してください。"
+        - name: "MAINTAINER"
+          message: "MAINTAINER は廃止命令です。LABEL maintainer を使ってください。"
       severity: error
 
 # mulyu 配下は MIT 統一。LICENSE ファイルの欠落・差し替えを検出する。
