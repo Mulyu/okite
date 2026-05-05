@@ -1,57 +1,59 @@
 # okite
 
-mulyu 配下リポジトリの Claude Code / monban 共通アセットを集約する場所。「掟（おきて）」= 共通ルール。
+> [日本語](./README.ja.md) | **English**
 
-## 提供物
+A central repository for shared Claude Code / monban assets across `mulyu` repositories. "Okite" (掟) means "common rules" in Japanese.
 
-### 1. monban セキュリティベースライン — `monban.yml`
+## What it ships
 
-[monban](https://github.com/Mulyu/monban) の `extends` 機能で取り込む共通設定。secret / conflict / invisible / injection 検出、GitHub Actions ハードニング、npm サプライチェーン対策、MCP 設定検査、`.gitignore` 対象の誤コミット検出を含む。
+### 1. monban security baseline — `monban.yml`
 
-子リポジトリの `monban.yml` で次のように継承する:
+A shared configuration that downstream repos pull in via [monban](https://github.com/Mulyu/monban)'s `extends` mechanism. It covers secret / conflict / invisible / injection detection, GitHub Actions hardening, npm supply-chain checks, MCP config inspection, and detection of files that should have been ignored by `.gitignore`.
+
+Child repos inherit it from their own `monban.yml`:
 
 ```yaml
 extends:
   - type: github
     repo: Mulyu/okite
-    ref: main          # 安定運用ではコミットハッシュ or タグを推奨
+    ref: main          # use a commit hash or tag for stable operation
     path: monban.yml
 
-# プロジェクト固有のルールはこの下に書く
+# Project-specific rules go below
 ```
 
-マージ仕様:
+Merge semantics:
 
-- 配列は連結（親のルールに子のルールが追加される）
-- スカラは子優先
-- 推移的解決はされない（okite 側でさらに extends してもチェーンしない）
+- Arrays are concatenated (child rules are appended to parent rules)
+- Scalars favour the child
+- Transitive resolution is not performed (further `extends` inside okite does not chain)
 
-### 2. Claude Code プラグイン — `okite`
+### 2. Claude Code plugin — `okite`
 
-`plugins/okite/` に Claude Code プラグイン本体を置く。スキルとフックを配布する。
+`plugins/okite/` hosts the Claude Code plugin itself. It distributes skills and hooks.
 
-#### スキル
+#### Skills
 
-- **thinking** — 企画・計画・設計を 3 周回（調査 → まとめ → 推敲）で深掘りする汎用スキル
-- **documentation** — README / docs を日英二言語で整備するときの命名規約・言語セレクタ・同期ルール
+- **thinking** — A general-purpose skill that deepens planning / design through three rounds (investigate → consolidate → refine)
+- **documentation** — Naming conventions, language selectors, and sync rules for maintaining bilingual (English / Japanese) READMEs and docs
 
-#### フック
+#### Hooks
 
-- **session-start** — Node プロジェクトで `.nvmrc` と `package.json` を見て依存をセットアップ（web 環境のみ）
-- **guard-bash** — main/master への force push、`--no-verify`、`git config` 改変をブロック
+- **session-start** — Sets up Node project dependencies by inspecting `.nvmrc` and `package.json` (web environments only)
+- **guard-bash** — Blocks force pushes to main/master, `--no-verify`, and `git config` mutations
 
-プロジェクト固有の禁止事項（特定コマンドの禁止など）は各リポジトリ側で別フックとして追加する。
+Project-specific bans (e.g. forbidding particular commands) should be added as separate hooks in each repository.
 
-## 使い方
+## Usage
 
-### marketplace の登録
+### Register the marketplace
 
 ```
 /plugin marketplace add Mulyu/okite
 /plugin install okite@mulyu-okite
 ```
 
-または各リポジトリの `.claude/settings.json` で:
+Or, in each repository's `.claude/settings.json`:
 
 ```json
 {
@@ -69,12 +71,12 @@ extends:
 }
 ```
 
-## バージョニング
+## Versioning
 
-- `ref: main` は最新版を取得（mutable、毎回 fetch）
-- 安定したい場合はコミットハッシュ or タグを指定（永続キャッシュ）
-- 破壊的変更時はタグを切る
+- `ref: main` always fetches the latest version (mutable, refetched every time)
+- For stability, pin to a commit hash or tag (persistent cache)
+- Cut a tag whenever a breaking change ships
 
-## ライセンス
+## License
 
 MIT
