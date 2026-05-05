@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-marketplace.json",
+  "name": "mulyu-okite",
+  "owner": {
+    "name": "mulyu",
+    "url": "https://github.com/Mulyu"
+  },
+  "metadata": {
+    "description": "mulyu の Claude Code 共通アセット（汎用スキル・汎用フック）と monban セキュリティベースラインを配布するマーケットプレイス。",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "okite",
+      "source": "./plugins/okite",
+      "description": "mulyu 共通の Claude Code スキル（thinking, docker）と汎用フック（session-start, guard-bash）を提供する。",
+      "version": "0.1.0",
+      "homepage": "https://github.com/Mulyu/okite",
+      "license": "MIT",
+      "keywords": [
+        "claude-code",
+        "skills",
+        "hooks",
+        "common"
+      ]
+    }
+  ]
+}

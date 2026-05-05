@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin.json",
+  "name": "okite",
+  "version": "0.1.0",
+  "description": "mulyu 共通の Claude Code スキルと汎用フック（thinking, docker, session-start, guard-bash）。",
+  "author": {
+    "name": "mulyu",
+    "url": "https://github.com/Mulyu"
+  },
+  "homepage": "https://github.com/Mulyu/okite",
+  "repository": "https://github.com/Mulyu/okite",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "skills",
+    "hooks",
+    "common"
+  ]
+}
