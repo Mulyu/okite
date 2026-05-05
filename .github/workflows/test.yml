@@ -1,0 +1,31 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+
+      - name: Validate marketplace.json
+        run: jq empty .claude-plugin/marketplace.json
+
+      - name: Validate plugin.json
+        run: jq empty plugins/okite/.claude-plugin/plugin.json
+
+      - name: Validate monban.yml
+        run: python3 -c "import yaml; yaml.safe_load(open('monban.yml'))"
