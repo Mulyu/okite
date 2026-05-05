@@ -13,7 +13,7 @@
     {
       "name": "okite",
       "source": "./plugins/okite",
-      "description": "mulyu 共通の Claude Code スキル（thinking, docker）と汎用フック（session-start, guard-bash）を提供する。",
+      "description": "mulyu 共通の Claude Code スキル（thinking, documentation）と汎用フック（session-start, guard-bash）を提供する。",
       "version": "0.1.0",
       "homepage": "https://github.com/Mulyu/okite",
       "license": "MIT",

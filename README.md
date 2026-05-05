@@ -33,7 +33,7 @@ extends:
 #### スキル
 
 - **thinking** — 企画・計画・設計を 3 周回（調査 → まとめ → 推敲）で深掘りする汎用スキル
-- **docker** — Claude Code web 環境で Docker デーモンを起動するときの制約と手順
+- **documentation** — README / docs を日英二言語で整備するときの命名規約・言語セレクタ・同期ルール
 
 #### フック
 
