@@ -1,158 +1,132 @@
-# mulyu / okite — monban security baseline
-#
-# 子リポジトリは extends で取り込む:
-#
-#   extends:
-#     - type: github
-#       repo: Mulyu/okite
-#       ref: main           # 安定運用ではコミットハッシュ or タグを推奨
-#       path: monban.yml
-#
-# マージ仕様:
-#   - 配列は連結（親のルールに子のルールが追加される）
-#   - スカラは子優先
-#   - extends の推移的解決はされない
-#
-# 方針:
-#   - ここには「常に有効でよい」security baseline と、mulyu 配下で統一しておきたい
-#     共通ライセンスポリシー（MIT 前提）だけを置く
-#   - 一度入れたルールは子側で取り下げられない（連結のため）
-#   - 各リポ固有の構造規約（path.naming/required/depth など）はここには入れない
+# mulyu / okite — monban security baseline (extends 用)。詳細は README.ja.md。
 
 exclude:
   - "**/node_modules/**"
 
 content:
   forbidden:
-    # 未解決のマージコンフリクトマーカー
     - path: "**/*"
       conflict: true
       severity: error
-    # シークレットらしき文字列
     - path: "**/*"
       secret: true
       severity: warn
-    # 不可視 Unicode 文字（ホモグリフ攻撃対策）
     - path: "**/*"
       invisible: true
       severity: warn
-    # AI エージェント向けドキュメントへのプロンプトインジェクション
     - path: "**/*.md"
       injection: true
       severity: warn
 
-# GitHub Actions のセキュリティハードニング
-# .github/workflows/ が無いリポジトリでは glob 0 マッチで自動スキップされる
 github:
   actions:
-    # SHA ピン留めで supply chain attack を防ぐ
     pinned:
       - path: ".github/workflows/**/*.yml"
-    # GITHUB_TOKEN への過剰権限付与を防ぐ（未宣言はデフォルト広範権限）
     permissions:
       - path: ".github/workflows/**/*.yml"
         required: true
         forbidden: ["write-all", "read-all"]
-    # 暴走ジョブによるコスト流出を防ぐ
     timeout:
       - path: ".github/workflows/**/*.yml"
         max: 20
-    # 冗長ビルド抑制
     concurrency:
       - path: ".github/workflows/**/*.yml"
-    # フォーク PR からのトークン奪取経路になりうるトリガー
     triggers:
       - path: ".github/workflows/**/*.yml"
         forbidden: ["pull_request_target"]
-    # 想定外のランナーへのジョブ投入を防ぐ
     runner:
       - path: ".github/workflows/**/*.yml"
         allowed: ["ubuntu-latest"]
-    # シークレット名のタイポや未定義参照を静的検出
-    # 子側で必要な token を concat で追加する想定
     secrets:
       - path: ".github/workflows/**/*.yml"
         allowed: ["GITHUB_TOKEN"]
-    # actions のバージョン混在を防ぐ
     consistency:
       - path: ".github/workflows/**/*.yml"
         actions: ["actions/checkout", "actions/setup-node"]
-    # 廃止・代替のあるアクション
     forbidden:
       - path: ".github/workflows/**/*.yml"
         uses: "actions/create-release"
-    # フォーク PR からの secret 窃取経路を検出
     danger:
       - path: ".github/workflows/**/*.yml"
-    # 信頼できない入力を run: に直埋めする script injection を検出
     injection:
       - path: ".github/workflows/**/*.yml"
 
-# npm 依存のサプライチェーン安全性
-# package.json が無いリポジトリでは glob 0 マッチで自動スキップされる
 deps:
-  # ハルシネーション / slopsquat 対策（存在しないパッケージ名の検出）
   existence:
     - path: "package.json"
     - path: ".github/workflows/**/*.yml"
-  # 人気パッケージに類似した名前（typosquat）
   typosquat:
     - path: "package.json"
       max_distance: 1
       severity: error
-  # 公開直後の新規パッケージ（攻撃で頻出）
   freshness:
     - path: "package.json"
       max_age_hours: 72
       severity: error
-  # 低人気パッケージ
   popularity:
     - path: "package.json"
       min_downloads: 1000
       severity: error
-  # エコシステム取り違え（AI エージェントの典型ミス）
   cross_ecosystem:
     - path: "package.json"
       severity: error
-  # 既知の compromise 事例
   forbidden:
     - path: "package.json"
       names:
         - event-stream
         - flatmap-stream
       message: "過去に compromise されたパッケージです。"
-  # npm lifecycle hook は任意コード実行の攻撃面（Shai-Hulud 等）
   install_scripts:
     - path: "package.json"
       severity: error
       message: "npm lifecycle hook はサプライチェーン攻撃の主要ベクトル。正当性を PR でレビュー。"
-  # レジストリ外依存はレジストリ監査が効かない
   git_dependency:
     - path: "package.json"
       severity: error
-  # 浮動バージョンは新規パッケージ侵害時に自動的に被弾する
   floating_version:
     - path: "package.json"
       severity: error
 
-# MCP / エージェント向け設定の整合性（2025-26 の MCP 関連 CVE 対応）
-# 設定ファイルが無いリポジトリでは glob 0 マッチで自動スキップされる
 agent:
   mcp:
     - path: "{.mcp.json,.claude/settings.json,.cursor/mcp.json}"
       unpinned_npx: true
       env_secrets: true
       severity: error
+  settings:
+    - path: "{.claude/settings.json,.claude/settings.local.json}"
+      unpinned_npx: true
+      severity: error
+  ignore:
+    - path: "{.llmignore,.aiexclude,.claudeignore,.cursorignore}"
+      severity: warn
 
-# .gitignore 対象ファイル（.env 等）の誤コミット検出
 git:
   diff:
     ignored:
       scope: diff
       severity: error
 
-# mulyu 配下は MIT 統一。LICENSE ファイルの欠落・差し替えを検出する。
-# header ルール（ソース先頭の SPDX-License-Identifier 必須）は重いので入れない。
+docker:
+  pinned:
+    - path: "**/Dockerfile"
+      severity: error
+  user:
+    - path: "**/Dockerfile"
+      severity: error
+  healthcheck:
+    - path: "**/Dockerfile"
+      severity: warn
+  forbidden:
+    - path: "**/Dockerfile"
+      instructions:
+        - name: "ADD"
+          pattern: "^https?://"
+          message: "ADD <URL> ではなく COPY + curl/wget で来歴を明示してください。"
+        - name: "MAINTAINER"
+          message: "MAINTAINER は廃止命令です。LABEL maintainer を使ってください。"
+      severity: error
+
 license:
   file:
     - path: "LICENSE"
