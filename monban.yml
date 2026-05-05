@@ -14,7 +14,8 @@
 #   - extends の推移的解決はされない
 #
 # 方針:
-#   - ここには「常に有効でよい」security baseline だけを置く
+#   - ここには「常に有効でよい」security baseline と、mulyu 配下で統一しておきたい
+#     共通ライセンスポリシー（MIT 前提）だけを置く
 #   - 一度入れたルールは子側で取り下げられない（連結のため）
 #   - 各リポ固有の構造規約（path.naming/required/depth など）はここには入れない
 
@@ -149,3 +150,12 @@ git:
     ignored:
       scope: diff
       severity: error
+
+# mulyu 配下は MIT 統一。LICENSE ファイルの欠落・差し替えを検出する。
+# header ルール（ソース先頭の SPDX-License-Identifier 必須）は重いので入れない。
+license:
+  file:
+    - path: "LICENSE"
+      allowed: ["MIT"]
+      severity: error
+      message: "mulyu 配下は MIT 統一。LICENSE ファイルが欠落しているか、別ライセンスに差し替えられています。"
