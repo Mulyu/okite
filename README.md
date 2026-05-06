@@ -36,6 +36,7 @@ Merge semantics:
 
 - **thinking** — A general-purpose skill that deepens planning / design through three rounds (investigate → consolidate → refine)
 - **documentation** — Naming conventions, language selectors, and sync rules for maintaining bilingual (English / Japanese) READMEs and docs
+- **implementation** — A 9-step implementation process: write the plan to a temporary doc, then drive architecture → `monban.yml` update → coding → tests → `monban all` → reconcile against the plan → delete the doc → open a PR
 
 #### Hooks
 
