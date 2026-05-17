@@ -34,16 +34,16 @@ Merge semantics:
 
 #### Skills
 
-okite skills are organized around the four axes of **harness engineering** (context / behavior / feedback / operation).
+A set of skills for designing and operating agent harnesses around the four axes of **harness engineering** (context / behavior / feedback / operation).
 
 - **thinking** — A general-purpose skill that deepens planning / design through three rounds (investigate → consolidate → refine)
 - **documentation** — Naming conventions, language selectors, and sync rules for maintaining bilingual (English / Japanese) READMEs and docs
-- **implementation** — A 9-step implementation process: write the plan to a temporary doc, then drive architecture → `monban.yml` update → coding → tests → `monban all` → reconcile against the plan → delete the doc → open a PR. Each step ends with a self-review pass against five lenses (plan-fit, scope, overengineering, reuse, safety)
-- **improvement** — A meta-skill that revises `SKILL.md` itself. Triggers on user feedback after a skill ran, mid-run failure / interruption, post-skill self-reflection, or explicit request; targets both okite plugin skills and a repo-local `.claude/skills/`; edits, commits, and opens a PR with the trigger recorded
-- **direction** — The product-direction skill for okite itself. Filters new-skill / new-rule / new-hook proposals through the four harness-engineering axes (context / behavior / feedback / operation), centralization fit, and whether existing assets already cover the need
+- **implementation** — A 9-step implementation process: write the plan to a temporary doc, then drive architecture → static-check rule update → coding → tests → static-check + test run → reconcile against the plan → delete the doc → open a PR. Each step ends with a lightweight same-agent self-review (five lenses); critical steps (architecture finalized / large implementation milestone / pre-PR) require an additional independent review delegated to a sub-agent via the evaluator skill
+- **improvement** — A meta-skill that revises `SKILL.md` itself. Triggers on user feedback after a skill ran, mid-run failure / interruption, post-skill self-reflection, or explicit request; targets both the plugin's skills and a repo-local `.claude/skills/`; edits, commits, and opens a PR with the trigger recorded
+- **direction** — The product-direction skill for an agent harness. Filters new-skill / new-rule / new-hook proposals through the four harness-engineering axes (context / behavior / feedback / operation), centralization fit, and whether existing assets already cover the need
 - **progress-log** — Cross-session progress file convention for long-running tasks. Externalizes goal, acceptance criteria, phases, session history, and "next action" into `.claude/progress/<task-slug>.md` so a new session can resume by reading it
-- **evaluator** — Generator-Evaluator separation: spin up a sub-agent to critique your own output from independent lenses. Used before high-stakes PRs or when self-review is biased
-- **observability** — A self-serve observability skill for agents to look up their own past PRs, CI logs, Datadog data, mihari run history, and progress files before making decisions
+- **evaluator** — Generator-Evaluator separation: spin up a sub-agent to critique your own output from independent lenses. Plugged into implementation as the mandatory second-layer self-review at critical steps
+- **observability** — A self-serve observability skill for agents to look up their own past PRs, CI logs, monitoring data, automation-tool run history, and progress files before making decisions
 
 #### Hooks
 
