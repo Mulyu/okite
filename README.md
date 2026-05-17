@@ -28,6 +28,15 @@ Merge semantics:
 - Scalars favour the child
 - Transitive resolution is not performed (further `extends` inside okite does not chain)
 
+#### Maintenance rule for `deps.forbidden`
+
+Packages confirmed compromised in supply-chain incidents are appended to `deps.forbidden.names` in `monban.yml`. The maintenance flow is written down explicitly so agents can drive it without human prompting.
+
+- **Review cadence**: revisit the list every six months. Trigger an out-of-band update immediately when a major supply-chain incident lands (e.g. a large-scale npm registry compromise)
+- **How to add**: go through a PR; record the incident summary and reference URLs (advisory / primary report) in the `message` field
+- **Never remove entries**: known-bad packages stay blocked forever, so they cannot sneak back in if they reappear later
+- **Decision owner**: okite maintainers approve via PR review. If a child repo needs an individual exception, do not silently override `severity` downstream — first propose the addition (or removal of the entry) to okite
+
 ### 2. Claude Code plugin — `okite`
 
 `plugins/okite/` hosts the Claude Code plugin itself. It distributes skills and hooks.

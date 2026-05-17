@@ -28,6 +28,15 @@ extends:
 - スカラは子優先
 - 推移的解決はされない（okite 側でさらに extends してもチェーンしない）
 
+#### `deps.forbidden` の運用ルール
+
+サプライチェーン攻撃で compromise が確認されたパッケージは `monban.yml` の `deps.forbidden.names` に追記する。エージェントが自走できるよう、メンテ手順を明文化する。
+
+- **レビュー周期**: 半年ごとに既存リストを見直す。重大な supply chain 事象（npm レジストリでの大規模 compromise 等）が発生したときは周期を待たずに即時更新する
+- **追加の流れ**: PR を経由する。`message` フィールドに事象の概要・参照 URL（advisory / 一次報道）を残す
+- **削除はしない**: 既知の悪性パッケージは永続的に禁止する（後から復活しても再度通る経路にしない）
+- **判断主体**: okite のメンテナが PR レビューで承認する。子リポジトリの monban.yml で個別解除が必要なら、子側で `severity` を下書きするのではなく、まず okite に追加是非を提起する
+
 ### 2. Claude Code プラグイン — `okite`
 
 `plugins/okite/` に Claude Code プラグイン本体を置く。スキルとフックを配布する。
