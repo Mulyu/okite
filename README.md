@@ -36,7 +36,7 @@ Merge semantics:
 
 - **thinking** — A general-purpose skill that deepens planning / design through three rounds (investigate → consolidate → refine)
 - **documentation** — Naming conventions, language selectors, and sync rules for maintaining bilingual (English / Japanese) READMEs and docs
-- **implementation** — A 9-step implementation process: write the plan to a temporary doc, then drive architecture → `monban.yml` update → coding → tests → `monban all` → reconcile against the plan → delete the doc → open a PR
+- **implementation** — A 9-step implementation process: write the plan to a temporary doc, then drive architecture → `monban.yml` update → coding → tests → `monban all` → reconcile against the plan → delete the doc → open a PR. Each step ends with a self-review pass against five lenses (plan-fit, scope, overengineering, reuse, safety)
 - **improvement** — A meta-skill that revises `SKILL.md` itself. Triggers on user feedback after a skill ran, mid-run failure / interruption, post-skill self-reflection, or explicit request; targets both okite plugin skills and a repo-local `.claude/skills/`; edits, commits, and opens a PR with the trigger recorded
 
 #### Hooks
