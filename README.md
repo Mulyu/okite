@@ -35,7 +35,7 @@ Packages confirmed compromised in supply-chain incidents are appended to `deps.f
 - **Review cadence**: revisit the list every six months. Trigger an out-of-band update immediately when a major supply-chain incident lands (e.g. a large-scale npm registry compromise)
 - **How to add**: go through a PR; record the incident summary and reference URLs (advisory / primary report) in the `message` field
 - **Never remove entries**: known-bad packages stay blocked forever, so they cannot sneak back in if they reappear later
-- **Decision owner**: okite maintainers approve via PR review. If a child repo needs an individual exception, do not silently override `severity` downstream — first propose the addition (or removal of the entry) to okite
+- **Decision owner**: okite maintainers approve via PR review. If a child repo needs an individual exception, do not silently override `severity` downstream — first propose the addition to okite
 
 ### 2. Claude Code plugin — `okite`
 
