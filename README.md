@@ -44,6 +44,7 @@ A set of skills for designing and operating agent harnesses around the four axes
 - **progress-log** — Cross-session progress file convention for long-running tasks. Externalizes goal, acceptance criteria, phases, session history, and "next action" into `.claude/progress/<task-slug>.md` so a new session can resume by reading it
 - **evaluator** — Generator-Evaluator separation: spin up a sub-agent to critique your own output from independent lenses. Plugged into implementation as the mandatory second-layer self-review at critical steps
 - **observability** — A self-serve observability skill for agents to look up their own past PRs, CI logs, monitoring data, automation-tool run history, and progress files before making decisions
+- **hooks** — A design-guide skill for Claude Code hooks (`hooks.json` / the `hooks` block in `settings.json`). Maps the available hook events onto the four harness-engineering axes, decides the split between CLAUDE.md / skills / static checks / hooks, draws the line between the shared harness and per-project hooks, and collects design guidance for reliability, performance, distribution, and environment persistence along with the typical anti-patterns
 
 #### Hooks
 
