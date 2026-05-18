@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin.json",
   "name": "okite",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "エージェントハーネス共通の Claude Code スキルと汎用フック（thinking, documentation, implementation, improvement, direction, progress-log, evaluator, observability, hooks, session-start, guard-bash）。",
   "author": {
     "name": "mulyu",
