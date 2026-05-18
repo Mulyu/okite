@@ -7,14 +7,14 @@
   },
   "metadata": {
     "description": "mulyu の Claude Code 共通アセット（汎用スキル・汎用フック）と monban セキュリティベースラインを配布するマーケットプレイス。",
-    "version": "0.1.0"
+    "version": "0.1.1"
   },
   "plugins": [
     {
       "name": "okite",
       "source": "./plugins/okite",
       "description": "エージェントハーネス共通の Claude Code スキルと汎用フック（thinking, documentation, implementation, improvement, direction, progress-log, evaluator, observability, session-start, guard-bash）。",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "homepage": "https://github.com/Mulyu/okite",
       "license": "MIT",
       "keywords": [
